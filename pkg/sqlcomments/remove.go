@@ -27,6 +27,10 @@ func Remove(in io.Reader, out io.Writer) error {
 		} else if state == inSingleQuotedString && ch == '\'' {
 			out.Write([]byte{'\''})
 			state = start
+		} else if state == inSingleQuotedString && ch == '\\' {
+			runes.ReadRune()
+			out.Write([]byte{'\\'})
+			out.Write([]byte(string([]rune{next})))
 		} else if state == start && ch == '-' && next == '-' {
 			runes.ReadRune()
 			state = inSingleLineComment
