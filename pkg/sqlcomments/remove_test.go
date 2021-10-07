@@ -34,5 +34,10 @@ func Test_Remove_does_not_remove_single_slashes(t *testing.T) {
 }
 
 func Test_Remove_removes_multi_line_comments(t *testing.T) {
-	check(t, " hello/* ??? */ there", " hello there")
+	check(t, " hello/* ???\n */ there", " hello there")
+	check(t, " hello/* ?\n?? **/ there", " hello there")
+}
+
+func Test_Remove_skips_single_quoted_single_line_comments(t *testing.T) {
+	check(t, " x'--hello'there", " x'--hello'there")
 }

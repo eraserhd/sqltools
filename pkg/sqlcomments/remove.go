@@ -12,6 +12,7 @@ const (
 	afterSlash
 	inMultiLineComment
 	inMultiLineCommentAfterStar
+	inSingleQuotedString
 )
 
 func Remove(in io.Reader, out io.Writer) error {
@@ -26,6 +27,9 @@ func Remove(in io.Reader, out io.Writer) error {
 				state = afterDash
 			case '/':
 				state = afterSlash
+			case '\'':
+				out.Write([]byte{'\''})
+				state = inSingleQuotedString
 			default:
 				out.Write([]byte(string([]rune{ch})))
 			}
@@ -60,6 +64,11 @@ func Remove(in io.Reader, out io.Writer) error {
 			} else {
 				state = inMultiLineComment
 				goto restart
+			}
+		case inSingleQuotedString:
+			out.Write([]byte(string([]rune{ch})))
+			if ch == '\'' {
+				state = start
 			}
 		}
 	}
