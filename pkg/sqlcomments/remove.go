@@ -11,6 +11,7 @@ const (
 	inMultiLineComment
 	inSingleQuotedString
 	inDoubleQuotedIdent
+	inDollarQuotedString
 )
 
 func Remove(in io.Reader, out io.Writer) error {
@@ -22,6 +23,7 @@ func Remove(in io.Reader, out io.Writer) error {
 			runes.UnreadRune()
 		}
 
+		// Single-quoted strings
 		if state == start && ch == '\'' {
 			out.Write([]byte{'\''})
 			state = inSingleQuotedString
@@ -36,6 +38,20 @@ func Remove(in io.Reader, out io.Writer) error {
 			runes.ReadRune()
 			out.Write([]byte{'\\'})
 			out.Write([]byte(string([]rune{next})))
+			continue
+		}
+
+		// Dollar-quoted strings
+		if state == start && ch == '$' && next == '$' {
+			runes.ReadRune()
+			out.Write([]byte{'$', '$'})
+			state = inDollarQuotedString
+			continue
+		}
+		if state == inDollarQuotedString && ch == '$' && next == '$' {
+			runes.ReadRune()
+			out.Write([]byte{'$', '$'})
+			state = start
 			continue
 		}
 

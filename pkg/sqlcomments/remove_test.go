@@ -53,3 +53,7 @@ func Test_Remove_is_not_confused_by_escaped_single_quotes(t *testing.T) {
 func Test_Remove_skips_double_quoted_comments(t *testing.T) {
 	check(t, ` x"--hello"there`, ` x"--hello"there`)
 }
+
+func Test_Remove_skips_comments_in_dollar_quoted_strings(t *testing.T) {
+	check(t, ` x $$--hello $$there`, ` x $$--hello $$there`)
+}
