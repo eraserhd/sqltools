@@ -30,5 +30,9 @@ func Test_Remove_removes_single_line_comments(t *testing.T) {
 }
 
 func Test_Remove_does_not_remove_single_slashes(t *testing.T) {
-        check(t, "/ hello/ *world /", "/ hello/ *world /")
+	check(t, "/ hello/ *world /", "/ hello/ *world /")
+}
+
+func Test_Remove_removes_multi_line_comments(t *testing.T) {
+	check(t, " hello/* ??? */ there", " hello there")
 }

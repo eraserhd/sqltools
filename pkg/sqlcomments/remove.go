@@ -21,9 +21,12 @@ func Remove(in io.Reader, out io.Writer) error {
 	restart:
 		switch state {
 		case start:
-			if ch == '-' {
+			switch ch {
+			case '-':
 				state = afterDash
-			} else {
+			case '/':
+				state = afterSlash
+			default:
 				out.Write([]byte(string([]rune{ch})))
 			}
 		case afterDash:
@@ -39,11 +42,32 @@ func Remove(in io.Reader, out io.Writer) error {
 				out.Write([]byte{'\n'})
 				state = start
 			}
+		case afterSlash:
+			if ch == '*' {
+				state = inMultiLineComment
+			} else {
+				out.Write([]byte{'/'})
+				state = start
+				goto restart
+			}
+		case inMultiLineComment:
+			if ch == '*' {
+				state = inMultiLineCommentAfterStar
+			}
+		case inMultiLineCommentAfterStar:
+			if ch == '/' {
+				state = start
+			} else {
+				state = inMultiLineComment
+				goto restart
+			}
 		}
 	}
 	switch state {
 	case afterDash:
 		out.Write([]byte{'-'})
+	case afterSlash:
+		out.Write([]byte{'/'})
 	}
 	return nil
 }
