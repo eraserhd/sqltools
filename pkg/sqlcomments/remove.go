@@ -10,6 +10,7 @@ const (
 	inSingleLineComment
 	inMultiLineComment
 	inSingleQuotedString
+	inDoubleQuotedIdent
 )
 
 func Remove(in io.Reader, out io.Writer) error {
@@ -24,27 +25,60 @@ func Remove(in io.Reader, out io.Writer) error {
 		if state == start && ch == '\'' {
 			out.Write([]byte{'\''})
 			state = inSingleQuotedString
-		} else if state == inSingleQuotedString && ch == '\'' {
+			continue
+		}
+		if state == inSingleQuotedString && ch == '\'' {
 			out.Write([]byte{'\''})
 			state = start
-		} else if state == inSingleQuotedString && ch == '\\' {
+			continue
+		}
+		if state == inSingleQuotedString && ch == '\\' {
 			runes.ReadRune()
 			out.Write([]byte{'\\'})
 			out.Write([]byte(string([]rune{next})))
-		} else if state == start && ch == '-' && next == '-' {
+			continue
+		}
+
+		// Double-quoted identifiers
+		if state == start && ch == '"' {
+			out.Write([]byte{'"'})
+			state = inDoubleQuotedIdent
+			continue
+		}
+		if state == inDoubleQuotedIdent && ch == '"' {
+			out.Write([]byte(string([]rune{ch})))
+			state = start
+			continue
+		}
+
+		// Single-line comments
+		if state == start && ch == '-' && next == '-' {
 			runes.ReadRune()
 			state = inSingleLineComment
-		} else if state == inSingleLineComment && ch == '\n' {
+			continue
+		}
+		if state == inSingleLineComment && ch == '\n' {
 			out.Write([]byte{'\n'})
 			state = start
-		} else if state == start && ch == '/' && next == '*' {
+			continue
+		}
+
+		// Multi-line comments
+		if state == start && ch == '/' && next == '*' {
 			runes.ReadRune()
 			state = inMultiLineComment
-		} else if state == inMultiLineComment && ch == '*' && next == '/' {
+			continue
+		}
+		if state == inMultiLineComment && ch == '*' && next == '/' {
 			runes.ReadRune()
 			state = start
-		} else if state != inSingleLineComment && state != inMultiLineComment {
+			continue
+		}
+
+		// Everything else
+		if state != inSingleLineComment && state != inMultiLineComment {
 			out.Write([]byte(string([]rune{ch})))
+			continue
 		}
 	}
 	return nil
