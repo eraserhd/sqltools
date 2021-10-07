@@ -33,6 +33,7 @@ func Remove(in io.Reader, out io.Writer) error {
 			}
 		case inSingleLineComment:
 			if ch == '\n' {
+				out.Write([]byte{'\n'})
 				state = start
 			}
 		}

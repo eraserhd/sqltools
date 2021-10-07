@@ -21,3 +21,10 @@ func check(t *testing.T, in string, out string) {
 func Test_Remove_does_not_remove_single_dashes(t *testing.T) {
 	check(t, "-  hel-lo -world -", "-  hel-lo -world -")
 }
+
+func Test_Remove_removes_single_line_comments(t *testing.T) {
+	check(t, " x--hello", " x")
+	check(t, "--hello", "")
+	check(t, "--hello\nthere", "\nthere")
+	check(t, "  x--hello\nx --there", "  x\nx ")
+}
