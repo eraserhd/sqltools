@@ -28,3 +28,7 @@ func Test_Remove_removes_single_line_comments(t *testing.T) {
 	check(t, "--hello\nthere", "\nthere")
 	check(t, "  x--hello\nx --there", "  x\nx ")
 }
+
+func Test_Remove_does_not_remove_single_slashes(t *testing.T) {
+        check(t, "/ hello/ *world /", "/ hello/ *world /")
+}

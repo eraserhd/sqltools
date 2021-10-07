@@ -9,6 +9,9 @@ const (
 	start = iota
 	afterDash
 	inSingleLineComment
+	afterSlash
+	inMultiLineComment
+	inMultiLineCommentAfterStar
 )
 
 func Remove(in io.Reader, out io.Writer) error {
