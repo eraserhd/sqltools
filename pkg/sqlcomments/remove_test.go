@@ -41,3 +41,7 @@ func Test_Remove_removes_multi_line_comments(t *testing.T) {
 func Test_Remove_skips_single_quoted_single_line_comments(t *testing.T) {
 	check(t, " x'--hello'there", " x'--hello'there")
 }
+
+func Test_Remove_skips_single_quoted_multi_line_comments(t *testing.T) {
+	check(t, " x'/*hello*/'there", " x'/*hello*/'there")
+}
