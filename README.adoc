@@ -1,4 +1,4 @@
 sqltools
 ========
 
-TODO: fill me in
+Tools for parsing and refactoring SQL.

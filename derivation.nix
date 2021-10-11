@@ -1,6 +1,6 @@
-{ stdenv, lib, fetchFromGitHub, ... }:
+{ buildGoModule, lib, fetchFromGitHub, ... }:
 
-stdenv.mkDerivation rec {
+buildGoModule rec {
   pname = "sqltools";
   version = "0.1.0";
 
@@ -11,8 +11,10 @@ stdenv.mkDerivation rec {
     sha256 = "";
   };
 
+  vendorSha256 = "pQpattmS9VmO3ZIQUFn66az8GSmB4IvYhTTCFn6SUmo=";
+
   meta = with lib; {
-    description = "TODO: fill me in";
+    description = "Tools for parsing and refactoring SQL";
     homepage = "https://github.com/eraserhd/sqltools";
     license = licenses.publicDomain;
     platforms = platforms.all;
