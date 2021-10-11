@@ -1,3 +1,3 @@
-module github.com/2uinc/nexus-tools
+module github.com/eraserhd/sqltools
 
 go 1.16

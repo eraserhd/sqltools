@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/2uinc/nexus-tools/pkg/sqlcomments"
+	"github.com/eraserhd/sqltools/pkg/sqlcomments"
 	"os"
 )
 
